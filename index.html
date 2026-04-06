@@ -803,6 +803,222 @@
     </ul>
   </footer>
 
+  <!-- ─── CHAT WIDGET ─── -->
+  <style>
+    #chat-bubble {
+      position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--paper); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    #chat-bubble:hover { transform: scale(1.08); }
+    #chat-bubble svg { width: 24px; height: 24px; color: var(--ink); }
+
+    #chat-panel {
+      position: fixed; bottom: 96px; right: 28px; z-index: 1000;
+      width: 360px; max-width: calc(100vw - 40px);
+      background: #0f0e0c;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+      display: none; flex-direction: column;
+      overflow: hidden; font-family: var(--sans);
+    }
+    #chat-panel.open { display: flex; }
+
+    .chat-header {
+      padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .chat-header-info { display: flex; align-items: center; gap: 10px; }
+    .chat-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(245,242,236,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .chat-header-name { font-size: 0.82rem; font-weight: 500; color: var(--paper); }
+    .chat-header-status { font-size: 0.68rem; color: rgba(245,242,236,0.4); }
+    .chat-close {
+      background: none; border: none; cursor: pointer;
+      color: rgba(245,242,236,0.4); padding: 4px; line-height: 1;
+      font-size: 18px; transition: color 0.2s;
+    }
+    .chat-close:hover { color: var(--paper); }
+
+    #chat-messages {
+      flex: 1; overflow-y: auto; padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 12px;
+      min-height: 280px; max-height: 380px;
+    }
+    #chat-messages::-webkit-scrollbar { width: 4px; }
+    #chat-messages::-webkit-scrollbar-track { background: transparent; }
+    #chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+    .msg {
+      max-width: 85%; font-size: 0.84rem; line-height: 1.55;
+      padding: 10px 14px; border-radius: 2px;
+      animation: fadeUp 0.2s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg.ai {
+      background: rgba(245,242,236,0.07);
+      color: rgba(245,242,236,0.85);
+      align-self: flex-start;
+    }
+    .msg.user {
+      background: var(--paper); color: var(--ink);
+      align-self: flex-end;
+    }
+    .msg.typing {
+      background: rgba(245,242,236,0.07);
+      color: rgba(245,242,236,0.4);
+      align-self: flex-start; font-style: italic; font-size: 0.78rem;
+    }
+
+    .chat-input-row {
+      display: flex; gap: 8px; padding: 14px 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    #chat-input {
+      flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 2px; padding: 10px 12px;
+      color: var(--paper); font-family: var(--sans); font-size: 0.83rem;
+      outline: none; resize: none;
+      transition: border-color 0.2s;
+    }
+    #chat-input:focus { border-color: rgba(255,255,255,0.25); }
+    #chat-input::placeholder { color: rgba(245,242,236,0.3); }
+    #chat-send {
+      background: var(--paper); border: none; cursor: pointer;
+      padding: 10px 14px; color: var(--ink); border-radius: 2px;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em;
+      text-transform: uppercase; transition: opacity 0.2s; white-space: nowrap;
+    }
+    #chat-send:hover { opacity: 0.8; }
+    #chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+  </style>
+
+  <!-- Bubble button -->
+  <button id="chat-bubble" aria-label="Open chat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+  <!-- Chat panel -->
+  <div id="chat-panel" role="dialog" aria-label="Chat with Cadence AI Labs">
+    <div class="chat-header">
+      <div class="chat-header-info">
+        <div class="chat-avatar">⚡</div>
+        <div>
+          <div class="chat-header-name">Cadence AI Labs</div>
+          <div class="chat-header-status">Typically replies instantly</div>
+        </div>
+      </div>
+      <button class="chat-close" id="chat-close-btn" aria-label="Close chat">×</button>
+    </div>
+    <div id="chat-messages"></div>
+    <div class="chat-input-row">
+      <textarea id="chat-input" rows="1" placeholder="What's eating up your time right now?"></textarea>
+      <button id="chat-send">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const WORKER_URL = 'https://cadence-chat.terrella8.workers.dev';
+    const bubble = document.getElementById('chat-bubble');
+    const panel = document.getElementById('chat-panel');
+    const closeBtn = document.getElementById('chat-close-btn');
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send');
+    const messagesEl = document.getElementById('chat-messages');
+
+    let messages = [];
+    let opened = false;
+
+    bubble.addEventListener('click', () => {
+      panel.classList.toggle('open');
+      if (!opened) { opened = true; initChat(); }
+      if (panel.classList.contains('open')) input.focus();
+    });
+    closeBtn.addEventListener('click', () => panel.classList.remove('open'));
+
+    function addMsg(text, role) {
+      const div = document.createElement('div');
+      div.className = `msg ${role}`;
+      div.textContent = text;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return div;
+    }
+
+    async function initChat() {
+      const typing = addMsg('Thinking…', 'typing');
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: [] })
+        });
+        const data = await res.json();
+        typing.remove();
+        const reply = data.reply || "Hey! What's the biggest time-waster in your business right now?";
+        addMsg(reply, 'ai');
+        messages.push({ role: 'assistant', content: reply });
+      } catch {
+        typing.remove();
+        addMsg("Hey! What's the biggest time-waster in your business right now?", 'ai');
+      }
+    }
+
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      input.style.height = 'auto';
+      sendBtn.disabled = true;
+
+      addMsg(text, 'user');
+      messages.push({ role: 'user', content: text });
+
+      const typing = addMsg('Typing…', 'typing');
+
+      try {
+        const res = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages })
+        });
+        const data = await res.json();
+        typing.remove();
+        const reply = data.reply || "Sorry, I hit a snag. Email hello@cadenceailabs.com directly.";
+        addMsg(reply, 'ai');
+        messages.push({ role: 'assistant', content: reply });
+      } catch {
+        typing.remove();
+        addMsg("Connection issue — email hello@cadenceailabs.com and we'll get back to you fast.", 'ai');
+      }
+      sendBtn.disabled = false;
+      input.focus();
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    // Auto-resize textarea
+    input.addEventListener('input', () => {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+    });
+  </script>
+
   <script>
     // Hero parallax (subtle — image moves slower than scroll)
     const heroImg = document.getElementById('hero-img');
