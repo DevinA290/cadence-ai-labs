@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadence AI Labs — Chicago</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1814;
+      --paper: #f5f2ec;
+      --rule-light: rgba(255,255,255,0.15);
+      --rule-dark: rgba(26,24,20,0.12);
+      --glass-light: rgba(250, 248, 244, 0.12);
+      --glass-mid: rgba(250, 248, 244, 0.08);
+      --glass-dark: rgba(20, 18, 14, 0.55);
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      background: #0d0c0a;
+    }
+
+    /* ─── PARALLAX STAGE ─── */
+    /* Each section is full-viewport, background image fixed */
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(20px, 4vw, 72px); height: 60px;
+      background: rgba(13, 12, 10, 0.5);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 1.1rem;
+      color: var(--paper); text-decoration: none; letter-spacing: -0.01em;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 0.75rem; font-weight: 400; letter-spacing: 0.07em;
+      text-transform: uppercase; color: rgba(245,242,236,0.55); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--paper); }
+    .nav-cta {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.07em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--ink); background: var(--paper);
+      padding: 9px 20px; transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.8; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      width: 100%; min-height: 100svh;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    .hero-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 30%;
+      display: block;
+      transform: scale(1.08);
+      transition: transform 0.1s linear;
+    }
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(10, 9, 7, 0.85) 0%,
+        rgba(10, 9, 7, 0.4) 50%,
+        rgba(10, 9, 7, 0.2) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative; z-index: 1;
+      padding: 60px clamp(20px, 5vw, 80px) clamp(48px, 6vw, 80px);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: flex-end;
+      gap: 40px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(245,242,236,0.5); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-eyebrow::before {
+      content: ''; display: block; width: 20px; height: 1px; background: currentColor;
+    }
+
+    .hero-headline {
+      font-family: var(--serif);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      line-height: 1.02; letter-spacing: -0.03em;
+      color: var(--paper);
+      max-width: 14ch;
+    }
+    .hero-headline em {
+      font-style: italic; color: rgba(245,242,236,0.55);
+    }
+
+    .hero-sub-col {
+      display: flex; flex-direction: column; align-items: flex-end;
+      gap: 24px; padding-bottom: 8px;
+      max-width: 340px; text-align: right;
+    }
+    .hero-sub {
+      font-size: 0.9rem; line-height: 1.7;
+      color: rgba(245,242,236,0.6);
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.07em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--ink); background: var(--paper);
+      padding: 13px 24px; transition: opacity 0.2s; white-space: nowrap;
+    }
+    .hero-cta:hover { opacity: 0.8; }
+
+    /* Hero stat bar */
+    .hero-stats {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: rgba(10, 9, 7, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .hero-stat {
+      padding: 20px clamp(16px, 2.5vw, 36px);
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    .hero-stat:last-child { border-right: none; }
+    .hero-stat-num {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      color: var(--paper); line-height: 1; margin-bottom: 4px;
+    }
+    .hero-stat-label {
+      font-size: 0.68rem; letter-spacing: 0.07em;
+      text-transform: uppercase; color: rgba(245,242,236,0.4);
+    }
+
+    /* ─── TICKER ─── */
+    .ticker {
+      padding: 12px 0; overflow: hidden;
+      background: rgba(10,9,7,0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .ticker-track {
+      display: flex; animation: ticker 35s linear infinite; white-space: nowrap;
+    }
+    .ticker-item {
+      font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(245,242,236,0.35); padding: 0 30px; flex-shrink: 0;
+    }
+    .ticker-item strong { color: rgba(245,242,236,0.75); font-weight: 500; }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ─── GLASS SECTION BASE ─── */
+    /* Sections with sticky background-attachment for parallax */
+    .bg-section {
+      position: relative;
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* ─── SERVICES SECTION ─── */
+    .services-bg {
+      background-image: url('https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1800&q=85');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+    }
+    .services-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(10, 9, 7, 0.72);
+    }
+
+    .services-inner {
+      position: relative; z-index: 1;
+      padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 80px);
+    }
+
+    .section-label {
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(245,242,236,0.35); margin-bottom: 48px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1);
+    }
+
+    .services-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+    .service-card {
+      padding: clamp(36px, 4vw, 56px) clamp(24px, 3.5vw, 48px);
+      background: rgba(250,248,244,0.04);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s;
+    }
+    .service-card:hover { background: rgba(250,248,244,0.09); }
+    .service-num {
+      font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(245,242,236,0.35); margin-bottom: 20px;
+    }
+    .service-title {
+      font-family: var(--serif); font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+      line-height: 1.15; color: var(--paper); margin-bottom: 16px;
+    }
+    .service-body {
+      font-size: 0.88rem; line-height: 1.75;
+      color: rgba(245,242,236,0.55); margin-bottom: 28px;
+    }
+    .service-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .service-tag {
+      font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(245,242,236,0.4);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 5px 10px;
+    }
+
+    /* ─── IMAGE BREAK — SAILBOAT ─── */
+    .break-1 {
+      height: 80vh; min-height: 480px;
+      background-image: url('https://images.unsplash.com/photo-1494522855154-9297ac14b55f?auto=format&fit=crop&w=1800&q=85');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex; align-items: center;
+    }
+    .break-1::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(10,9,7,0.7) 0%, rgba(10,9,7,0.3) 60%, rgba(10,9,7,0.5) 100%);
+    }
+    .break-text {
+      position: relative; z-index: 1;
+      padding: clamp(32px, 5vw, 80px);
+      max-width: 900px;
+    }
+    .break-label {
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(245,242,236,0.4); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .break-label::before { content: ''; width: 20px; height: 1px; background: currentColor; }
+    .break-headline {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 5.5vw, 5rem);
+      line-height: 1.05; letter-spacing: -0.025em; color: var(--paper);
+    }
+    .break-headline em { font-style: italic; color: rgba(245,242,236,0.5); }
+
+    /* ─── WHO WE SERVE ─── */
+    .who-bg {
+      background-image: url('https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&w=1800&q=85');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center top;
+    }
+    .who-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(8, 7, 5, 0.8);
+    }
+    .who-inner {
+      position: relative; z-index: 1;
+      padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 80px);
+    }
+    .who-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .who-col {
+      padding: clamp(36px, 4vw, 56px) clamp(24px, 3.5vw, 48px);
+      background: rgba(250,248,244,0.04);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .who-col-eyebrow {
+      font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(245,242,236,0.35); margin-bottom: 10px;
+    }
+    .who-col-title {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      line-height: 1.15; color: var(--paper); margin-bottom: 32px;
+    }
+    .pain-list { list-style: none; }
+    .pain-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.07);
+      font-size: 0.85rem; line-height: 1.55;
+      color: rgba(245,242,236,0.5);
+    }
+    .pain-item::before {
+      content: '→'; color: rgba(245,242,236,0.3);
+      flex-shrink: 0; font-size: 0.7rem; margin-top: 2px;
+    }
+
+    /* ─── PROOF ─── */
+    .proof-section {
+      background: rgba(10,9,7,0.97);
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .proof-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      max-width: 100%;
+    }
+    .proof-left {
+      padding: clamp(56px, 7vw, 96px) clamp(24px, 5vw, 80px);
+      border-right: 1px solid rgba(255,255,255,0.07);
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    blockquote.proof-quote {
+      font-family: var(--serif);
+      font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+      line-height: 1.35; color: var(--paper); font-style: italic;
+    }
+    .proof-attr { margin-top: 28px; }
+    .proof-name {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.07em;
+      text-transform: uppercase; color: rgba(245,242,236,0.8);
+    }
+    .proof-role { font-size: 0.73rem; color: rgba(245,242,236,0.35); margin-top: 4px; }
+    .proof-right {
+      padding: clamp(56px, 7vw, 96px) clamp(24px, 5vw, 80px);
+    }
+    .proof-stat-row {
+      padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .proof-stat-row:last-child { border-bottom: none; }
+    .proof-stat-num {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      color: var(--paper); line-height: 1; margin-bottom: 5px;
+    }
+    .proof-stat-desc { font-size: 0.8rem; color: rgba(245,242,236,0.4); }
+
+    /* ─── IMAGE BREAK 2 ─── */
+    .break-2 {
+      height: 65vh; min-height: 400px;
+      background-image: url('https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1800&q=85');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center 40%;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+    }
+    .break-2::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(8,7,5,0.55);
+    }
+    .break-2-text {
+      position: relative; z-index: 1;
+      padding: clamp(24px, 4vw, 64px);
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 4.5vw, 4rem);
+      line-height: 1.1; letter-spacing: -0.02em; color: var(--paper);
+      max-width: 800px;
+    }
+    .break-2-text em { font-style: italic; color: rgba(245,242,236,0.5); }
+
+    /* ─── PROCESS ─── */
+    .process-section {
+      background: rgba(10,9,7,0.98);
+    }
+    .process-inner {
+      padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 80px);
+    }
+    .process-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .process-step {
+      padding: clamp(28px, 3vw, 44px) clamp(20px, 2.5vw, 36px);
+      background: rgba(250,248,244,0.02);
+      transition: background 0.3s;
+    }
+    .process-step:hover { background: rgba(250,248,244,0.06); }
+    .process-num {
+      font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(245,242,236,0.3); margin-bottom: 18px;
+    }
+    .process-title {
+      font-family: var(--serif); font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      line-height: 1.2; color: var(--paper); margin-bottom: 10px;
+    }
+    .process-body {
+      font-size: 0.82rem; line-height: 1.65; color: rgba(245,242,236,0.45);
+    }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      position: relative; overflow: hidden;
+      min-height: 70vh;
+      display: flex; align-items: center;
+      background-image: url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1800&q=80');
+      background-attachment: fixed;
+      background-size: cover;
+      background-position: center;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(10,9,7,0.92) 0%,
+        rgba(10,9,7,0.75) 60%,
+        rgba(10,9,7,0.55) 100%
+      );
+    }
+    .cta-inner {
+      position: relative; z-index: 1;
+      width: 100%;
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 80px);
+      gap: 80px;
+    }
+    .cta-eyebrow {
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(245,242,236,0.35); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .cta-eyebrow::before { content: ''; width: 20px; height: 1px; background: currentColor; }
+    .cta-headline {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4.5vw, 4rem);
+      line-height: 1.08; letter-spacing: -0.025em; color: var(--paper); margin-bottom: 40px;
+    }
+    .cta-headline em { font-style: italic; color: rgba(245,242,236,0.45); }
+    .cta-actions { display: flex; flex-direction: column; gap: 14px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.07em;
+      text-transform: uppercase; text-decoration: none;
+      color: var(--ink); background: var(--paper);
+      padding: 15px 26px; transition: opacity 0.2s; align-self: flex-start;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase;
+      text-decoration: none; color: rgba(245,242,236,0.4);
+      padding: 15px 0; align-self: flex-start;
+      border-bottom: 1px solid rgba(245,242,236,0.12);
+      transition: color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--paper); }
+    .cta-right-title {
+      font-family: var(--serif); font-size: 1.4rem; line-height: 1.3;
+      color: rgba(245,242,236,0.8); margin-bottom: 28px;
+    }
+    .cta-list { list-style: none; }
+    .cta-list li {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.85rem; color: rgba(245,242,236,0.45);
+    }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(245,242,236,0.3); flex-shrink: 0; }
+    .cta-location {
+      margin-top: 40px; font-size: 0.7rem; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(245,242,236,0.25);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 22px clamp(20px, 4vw, 72px);
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(6,5,4,1);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-logo { font-family: var(--serif); font-size: 0.9rem; color: var(--paper); text-decoration: none; }
+    .footer-copy { font-size: 0.7rem; color: rgba(245,242,236,0.25); }
+    .footer-links { display: flex; gap: 24px; list-style: none; }
+    .footer-links a {
+      font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase;
+      color: rgba(245,242,236,0.3); text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--paper); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-sub-col { align-items: flex-start; text-align: left; max-width: 100%; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .services-grid { grid-template-columns: 1fr; }
+      .who-grid { grid-template-columns: 1fr; }
+      .proof-inner { grid-template-columns: 1fr; }
+      .proof-left { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+      .process-grid { grid-template-columns: 1fr 1fr; }
+      .cta-inner { grid-template-columns: 1fr; gap: 48px; }
+      .nav-links { display: none; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+      /* Disable fixed bg on mobile (iOS doesn't support it) */
+      .services-bg, .who-bg, .break-1, .break-2, .cta-section {
+        background-attachment: scroll;
+      }
+    }
+    @media (max-width: 540px) {
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .process-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">Cadence AI Labs</a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#who">Who We Help</a></li>
+      <li><a href="#process">Process</a></li>
+    </ul>
+    <a href="https://tally.so/r/44vz0o" target="_blank" rel="noopener" class="nav-cta">Get in touch</a>
+  </nav>
+
+  <!-- HERO: Ocean wave — full-bleed, text bottom-anchored -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img
+        id="hero-img"
+        src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1800&q=85"
+        alt="Modern office — premium tech firm"
+        loading="eager"
+      />
+    </div>
+
+    <div class="hero-content">
+      <div>
+        <p class="hero-eyebrow">Chicago, Illinois — Est. 2025</p>
+        <h1 class="hero-headline">
+          AI that moves with <em>your</em> rhythm.
+        </h1>
+      </div>
+      <div class="hero-sub-col">
+        <p class="hero-sub">We build AI agents and automations for Chicago businesses — not generic tools, but systems tuned to how you actually work.</p>
+        <a href="https://tally.so/r/44vz0o" target="_blank" rel="noopener" class="hero-cta">
+          Start the conversation
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">40+</div>
+        <div class="hero-stat-label">Hours saved / month</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">72h</div>
+        <div class="hero-stat-label">To first live agent</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">3×</div>
+        <div class="hero-stat-label">Faster lead response</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">$0</div>
+        <div class="hero-stat-label">Wasted on unused tools</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span class="ticker-item"><strong>AI Agents</strong> — built for your workflows</span>
+      <span class="ticker-item"><strong>Automation</strong> — less manual, more margin</span>
+      <span class="ticker-item"><strong>Chicago-based</strong> — real accountability</span>
+      <span class="ticker-item"><strong>Integrations</strong> — your tools, connected</span>
+      <span class="ticker-item"><strong>No lock-in</strong> — earn it every month</span>
+      <span class="ticker-item"><strong>AI Agents</strong> — built for your workflows</span>
+      <span class="ticker-item"><strong>Automation</strong> — less manual, more margin</span>
+      <span class="ticker-item"><strong>Chicago-based</strong> — real accountability</span>
+      <span class="ticker-item"><strong>Integrations</strong> — your tools, connected</span>
+      <span class="ticker-item"><strong>No lock-in</strong> — earn it every month</span>
+    </div>
+  </div>
+
+  <!-- SERVICES: Green hills parallax bg, glass cards -->
+  <section id="services" class="bg-section services-bg">
+    <div class="services-inner">
+      <p class="section-label">What We Build</p>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-num">01</div>
+          <h2 class="service-title">AI Agents</h2>
+          <p class="service-body">Custom agents that handle high-volume repetitive work — answering customer questions, qualifying leads, scheduling, following up. You set the rules; the agent handles the volume around the clock.</p>
+          <div class="service-tags">
+            <span class="service-tag">Lead Qualification</span>
+            <span class="service-tag">Customer Support</span>
+            <span class="service-tag">Scheduling</span>
+            <span class="service-tag">Follow-up</span>
+          </div>
+        </div>
+        <div class="service-card">
+          <div class="service-num">02</div>
+          <h2 class="service-title">AI Automations</h2>
+          <p class="service-body">Connect your existing tools and eliminate the manual steps in between. Estimates, invoices, CRM updates, reports — built once, running always. No new software required.</p>
+          <div class="service-tags">
+            <span class="service-tag">CRM Sync</span>
+            <span class="service-tag">Invoicing</span>
+            <span class="service-tag">Reporting</span>
+            <span class="service-tag">Notifications</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMAGE BREAK 1: Sailboat mirror reflection -->
+  <div class="break-1">
+    <div class="break-text">
+      <p class="break-label">The Cadence difference</p>
+      <h2 class="break-headline">
+        Every business has a rhythm.<br>We help you <em>find yours</em>.
+      </h2>
+    </div>
+  </div>
+
+  <!-- WHO WE SERVE: Milky Way bg -->
+  <section id="who" class="bg-section who-bg">
+    <div class="who-inner">
+      <p class="section-label">Who We Help</p>
+      <div class="who-grid">
+        <div class="who-col">
+          <p class="who-col-eyebrow">Small Business</p>
+          <h3 class="who-col-title">Owner-operators who<br>are the business</h3>
+          <ul class="pain-list">
+            <li class="pain-item">Answering the same customer questions every single day</li>
+            <li class="pain-item">Estimates and follow-ups slip through the cracks</li>
+            <li class="pain-item">You hired someone for admin — they're still not keeping up</li>
+            <li class="pain-item">You know there's a better way but don't have time to find it</li>
+            <li class="pain-item">You've heard about AI but don't know what's actually useful</li>
+          </ul>
+        </div>
+        <div class="who-col">
+          <p class="who-col-eyebrow">Mid-Size Operations</p>
+          <h3 class="who-col-title">Teams that have outgrown<br>their tooling</h3>
+          <ul class="pain-list">
+            <li class="pain-item">Your team is doing work that software should be doing</li>
+            <li class="pain-item">Data stuck in three systems that don't talk to each other</li>
+            <li class="pain-item">You've invested in tools that nobody actually uses</li>
+            <li class="pain-item">Reporting takes a full day to pull together manually</li>
+            <li class="pain-item">Your last vendor gave you a ChatGPT wrapper and called it AI</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF: Dark solid band -->
+  <div class="proof-section">
+    <div class="proof-inner">
+      <div class="proof-left">
+        <p class="section-label">Client results</p>
+        <blockquote class="proof-quote">
+          "We were spending 15 hours a week on follow-up emails and reminders. Now the system handles it. I haven't thought about it in two months."
+        </blockquote>
+        <div class="proof-attr">
+          <p class="proof-name">Chicago Business Owner</p>
+          <p class="proof-role">Home Services — Early client</p>
+        </div>
+      </div>
+      <div class="proof-right">
+        <p class="section-label">By the numbers</p>
+        <div class="proof-stat-row">
+          <div class="proof-stat-num">15+ hrs</div>
+          <div class="proof-stat-desc">Reclaimed per week on average</div>
+        </div>
+        <div class="proof-stat-row">
+          <div class="proof-stat-num">3×</div>
+          <div class="proof-stat-desc">Faster response to inbound leads</div>
+        </div>
+        <div class="proof-stat-row">
+          <div class="proof-stat-num">Week 1</div>
+          <div class="proof-stat-desc">First automation live and running</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE BREAK 2: Ocean wave centered quote -->
+  <div class="break-2">
+    <p class="break-2-text">
+      The right AI doesn't replace<br>how you work.<br>It <em>amplifies</em> it.
+    </p>
+  </div>
+
+  <!-- PROCESS -->
+  <section id="process" class="process-section">
+    <div class="process-inner">
+      <p class="section-label">How It Works</p>
+      <div class="process-grid">
+        <div class="process-step">
+          <div class="process-num">Step 01</div>
+          <h3 class="process-title">Free 30-min call</h3>
+          <p class="process-body">We talk through your business — where time is being lost, what's slipping, and whether AI will actually help. No pitch deck. Just an honest conversation.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">Step 02</div>
+          <h3 class="process-title">We map a solution</h3>
+          <p class="process-body">If it's a good fit, we scope exactly what we'll build — tools, timeline, cost. You approve before we write a single line of code.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">Step 03</div>
+          <h3 class="process-title">Build in days, not months</h3>
+          <p class="process-body">We ship fast. Most first automations are live within a week. You test it, we tune it, and it keeps running without you managing it.</p>
+        </div>
+        <div class="process-step">
+          <div class="process-num">Step 04</div>
+          <h3 class="process-title">Ongoing, or done</h3>
+          <p class="process-body">Some clients want a monthly retainer. Some want a one-time build. Either works. We don't lock you in — we earn it every month.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA: Chicago skyline bg -->
+  <section id="contact" class="cta-section">
+    <div class="cta-inner">
+      <div>
+        <p class="cta-eyebrow">Ready to start?</p>
+        <h2 class="cta-headline">
+          Let's figure out what's<br><em>actually</em> slowing<br>you down.
+        </h2>
+        <div class="cta-actions">
+          <a href="https://tally.so/r/44vz0o" target="_blank" rel="noopener" class="btn-primary">
+            Fill out our intake form
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+              <path d="M1 7H13M7 1L13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <a href="mailto:hello@cadenceailabs.com" class="btn-ghost">Or email us directly →</a>
+        </div>
+      </div>
+      <div>
+        <h3 class="cta-right-title">What to expect when you reach out</h3>
+        <ul class="cta-list">
+          <li><span class="dot"></span>Response within 4 business hours</li>
+          <li><span class="dot"></span>Free 30-minute discovery call</li>
+          <li><span class="dot"></span>Honest assessment — we'll say if it's not a fit</li>
+          <li><span class="dot"></span>Full scope + pricing before any commitment</li>
+          <li><span class="dot"></span>No long-term contract required</li>
+        </ul>
+        <p class="cta-location">◉ &nbsp;Based in Chicago, IL — serving the whole metro</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#" class="footer-logo">Cadence AI Labs</a>
+    <p class="footer-copy">© 2025 Cadence AI Labs. Chicago, IL.</p>
+    <ul class="footer-links">
+      <li><a href="https://tally.so/r/44vz0o" target="_blank" rel="noopener">Apply</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    // Hero parallax (subtle — image moves slower than scroll)
+    const heroImg = document.getElementById('hero-img');
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const heroH = document.querySelector('.hero').offsetHeight;
+          if (scrollY < heroH) {
+            const offset = scrollY * 0.3;
+            heroImg.style.transform = `scale(1.08) translateY(${offset}px)`;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+  </script>
+</body>
+</html>
