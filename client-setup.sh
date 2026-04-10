@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # client-setup.sh — Cadence AI Labs client onboarding script
-# Version: 1.1.0
+# Version: 1.2.0
 # Date: 2026-04-10
 
 set -e
@@ -116,7 +116,13 @@ for config in AGENTS.md SOUL.md HEARTBEAT.md; do
   fi
 done
 
-# ── 8. Start gateway ──────────────────────────────────────────────────────────
+# ── 8. Install gateway as LaunchAgent (auto-start on login/reboot) ───────────
+
+echo "⏳ Installing agent to start automatically on login..."
+openclaw gateway install 2>/dev/null || true
+echo "✓ Agent will start automatically when your Mac starts"
+
+# ── 9. Start gateway now ──────────────────────────────────────────────────────
 
 echo "⏳ Starting your agent..."
 openclaw gateway start 2>/dev/null || true
@@ -124,7 +130,18 @@ sleep 3
 openclaw status 2>/dev/null || true
 echo "✓ Agent is running"
 
-# ── 9. Done ───────────────────────────────────────────────────────────────────
+# ── 10. Watchdog cron (auto-restart if Slack connection dies) ─────────────────
+
+echo "⏳ Setting up connection watchdog..."
+openclaw cron add \
+  --name "agent-watchdog" \
+  --every 30m \
+  --description "Restart gateway if Slack connection has gone silent" \
+  --system-event "Check if the agent is healthy by running: openclaw status. If the gateway is not running or sessions show no recent activity, run: openclaw gateway restart. Then reply HEARTBEAT_OK." \
+  2>/dev/null || true
+echo "✓ Watchdog active — agent will self-heal if connection drops"
+
+# ── 11. Done ──────────────────────────────────────────────────────────────────
 
 echo ""
 echo "╔══════════════════════════════════════════════════════════════╗"
