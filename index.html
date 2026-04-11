@@ -139,7 +139,7 @@
 
     /* ─── SERVICES ─── */
     .services-section { padding: clamp(64px, 8vw, 112px) clamp(20px, 5vw, 80px); border-bottom: 1px solid var(--rule); }
-    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .service-card {
       padding: clamp(36px, 4vw, 56px) clamp(24px, 3.5vw, 48px);
       transition: background 0.3s;
@@ -326,12 +326,58 @@
     .footer-links a { font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(245,242,236,0.3); text-decoration: none; transition: color 0.2s; }
     .footer-links a:hover { color: var(--paper); }
 
+    /* ─── BRIDGE STRIP ─── */
+    .bridge-strip {
+      padding: clamp(28px, 4vw, 44px) clamp(20px, 5vw, 80px);
+      border-top: 1px solid var(--glass-border);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(245,242,236,0.025);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      flex-wrap: wrap;
+    }
+    .bridge-eyebrow { font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .bridge-headline { font-family: var(--serif); font-size: clamp(1.2rem, 2.5vw, 1.8rem); line-height: 1.2; color: var(--paper); }
+    .bridge-cta {
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase;
+      text-decoration: none; color: var(--paper); border: 1px solid var(--glass-border);
+      padding: 11px 20px; white-space: nowrap; transition: all 0.2s; background: rgba(245,242,236,0.04);
+      flex-shrink: 0;
+    }
+    .bridge-cta:hover { background: rgba(245,242,236,0.08); border-color: rgba(255,255,255,0.2); }
+
+    /* ─── LEAD CAPTURE ─── */
+    .lead-capture-row {
+      display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+      border-top: 1px solid var(--rule); background: rgba(8,7,5,0.4);
+      animation: fadeUp 0.3s ease; flex-wrap: wrap;
+    }
+    .lead-capture-label { font-size: 0.74rem; color: rgba(245,242,236,0.45); white-space: nowrap; flex-shrink: 0; margin-right: 4px; }
+    .lead-capture-input {
+      flex: 1; min-width: 140px; background: rgba(245,242,236,0.05); border: 1px solid var(--rule);
+      padding: 7px 11px; color: var(--paper); font-family: var(--sans); font-size: 0.8rem; outline: none;
+    }
+    .lead-capture-input::placeholder { color: rgba(245,242,236,0.22); }
+    .lead-capture-input:focus { border-color: rgba(255,255,255,0.2); }
+    .lead-capture-input:disabled { opacity: 0.4; }
+    .lead-capture-btn {
+      background: rgba(245,242,236,0.07); border: 1px solid var(--rule);
+      padding: 7px 14px; cursor: pointer; color: var(--muted);
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .lead-capture-btn:hover { background: rgba(245,242,236,0.13); color: var(--paper); }
+    .lead-capture-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .lead-capture-sent { font-size: 0.78rem; color: rgba(120,200,120,0.85); padding: 10px 18px; border-top: 1px solid var(--rule); animation: fadeUp 0.25s ease; }
+
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
       .hero-content { grid-template-columns: 1fr; }
       .hero-sub-col { align-items: flex-start; text-align: left; max-width: 100%; }
       .hero-stats { grid-template-columns: repeat(2, 1fr); }
-      .services-grid, .who-grid, .pilot-grid, .advisor-inner { grid-template-columns: 1fr; }
+      .services-grid, .who-grid, .pilot-grid, .advisor-inner, .bridge-strip { grid-template-columns: 1fr; }
+      .bridge-strip { flex-direction: column; align-items: flex-start; }
       .proof-inner { grid-template-columns: 1fr; }
       .proof-left { border-right: none; border-bottom: 1px solid var(--rule); }
       .process-grid { grid-template-columns: 1fr 1fr; }
@@ -422,6 +468,17 @@
           <span class="service-tag">Notifications</span>
         </div>
       </div>
+      <div class="service-card glass-card">
+        <div class="service-num">03</div>
+        <h2 class="service-title">Custom Builds</h2>
+        <p class="service-body">Need something built from scratch? A web app, internal tool, client portal, or custom dashboard — we build those too. No agency overhead, no bloated timelines. Just clean software that solves the specific problem you have.</p>
+        <div class="service-tags">
+          <span class="service-tag">Web Apps</span>
+          <span class="service-tag">Internal Tools</span>
+          <span class="service-tag">Client Portals</span>
+          <span class="service-tag">Custom Dashboards</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -429,6 +486,15 @@
   <div class="divider-quote">
     <p class="divider-label">The Cadence difference</p>
     <h2>Every business has a rhythm.<br>We help you <em>find yours</em>.</h2>
+  </div>
+
+  <!-- BRIDGE STRIP -->
+  <div class="bridge-strip">
+    <div>
+      <p class="bridge-eyebrow">Find your fit</p>
+      <p class="bridge-headline">Not sure what you need? Describe your problem —<br>we'll figure it out together.</p>
+    </div>
+    <a href="#advisor" class="bridge-cta">Talk to our AI advisor →</a>
   </div>
 
   <!-- WHO WE SERVE -->
@@ -469,9 +535,9 @@
         <p class="advisor-desc">No forms. No sales call required. Tell the AI advisor what's slowing you down and get a specific, honest answer about what we'd actually automate — in seconds.</p>
         <ul class="advisor-hints" id="hint-list">
           <li class="advisor-hint" data-hint="I spend hours every day answering the same customer questions over and over.">I spend hours answering the same customer questions</li>
-          <li class="advisor-hint" data-hint="My team manually enters data between systems all day. Nothing talks to each other.">My team manually moves data between systems all day</li>
           <li class="advisor-hint" data-hint="Leads come in but our follow-up is slow and inconsistent. We're losing deals.">Our lead follow-up is slow and we're losing deals</li>
-          <li class="advisor-hint" data-hint="Building reports takes forever. I have to pull data from multiple places manually.">Building reports takes forever every week</li>
+          <li class="advisor-hint" data-hint="I need something custom built for my business — a web app, internal tool, or client portal — but I don't know where to start.">I need something custom built for my business but don't know where to start</li>
+          <li class="advisor-hint" data-hint="I want to automate part of my business but have no idea what's possible or where to begin.">I want to automate part of my business but have no idea what's possible</li>
         </ul>
       </div>
       <div class="advisor-chat glass-card">
@@ -630,7 +696,40 @@
     const input = document.getElementById('advisor-input');
     const sendBtn = document.getElementById('advisor-send');
     const messagesEl = document.getElementById('advisor-messages');
-    let messages = [], started = false;
+    const advisorChat = document.querySelector('.advisor-chat');
+    const advisorInputRow = document.querySelector('.advisor-input-row');
+    let messages = [], started = false, leadCaptureShown = false;
+
+    function showLeadCapture() {
+      leadCaptureShown = true;
+      const row = document.createElement('div');
+      row.className = 'lead-capture-row';
+      row.innerHTML = `
+        <span class="lead-capture-label">Want Devin to review this and follow up with you?</span>
+        <input class="lead-capture-input" type="email" placeholder="your@email.com" />
+        <button class="lead-capture-btn">Send →</button>
+      `;
+      const btn = row.querySelector('.lead-capture-btn');
+      const emailInput = row.querySelector('.lead-capture-input');
+      btn.addEventListener('click', async () => {
+        const email = emailInput.value.trim();
+        if (!email) return;
+        btn.disabled = true;
+        emailInput.disabled = true;
+        try {
+          await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ submit: true, email, messages })
+          });
+        } catch {}
+        const sent = document.createElement('div');
+        sent.className = 'lead-capture-sent';
+        sent.textContent = 'Sent! Devin will be in touch.';
+        row.replaceWith(sent);
+      });
+      advisorChat.insertBefore(row, advisorInputRow);
+    }
 
     function addMsg(text, role) {
       const div = document.createElement('div');
@@ -673,6 +772,9 @@
         const reply = data.reply || "Sorry, hit a snag. Email hello@cadenceailabs.com.";
         addMsg(reply, 'ai');
         messages.push({ role: 'assistant', content: reply });
+        if (!leadCaptureShown && messages.filter(m => m.role === 'user').length === 1) {
+          showLeadCapture();
+        }
       } catch {
         typing.remove();
         addMsg("Connection issue — email hello@cadenceailabs.com and we'll get back to you fast.", 'ai');
